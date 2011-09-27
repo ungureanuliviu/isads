@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Login to 123-reg Webmail</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="library/styles/index.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="library/styles/handheld.css" type="text/css" media="handheld"/>
+	<script language="javascript" type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script language="javascript" type="text/javascript" src="/login_common/javascript/webmail.js"></script>
+	<script language="javascript">
+		var supplier_id = 3;
+		google.load("jquery","1.6.1");
+		google.setOnLoadCallback(function(){
+			$("#login_form").submit(function(event){
+				try{
+				WM.API.Call.login($("[name=account]").val(),$("[name=password]").val());
+				}catch(e){ alert(e);}
+				event.preventDefault();
+				return false;
+			});
+			$("[name=account]").focus(function(){
+				if($(this).val() == "email@example.com"){
+					$(this).val("");
+				}
+			}).blur(function(){
+				if($(this).val() == ""){
+					$(this).val("email@example.com");
+				}
+			});
+
+			if(window.location.protocol != 'https:'){
+				$(".footer p").fadeIn(200, function(){
+					$(this).removeClass("hidden");
+				});
+			}
+		});		
+		if (screen.width <= 699) {
+			document.location = "/mail/mobile/";
+		}
+	</script>
+  </head>
+  <body class="login">
+	  <div class="full_width">
+		  <div class="loginContent">
+			  <h1><a href="/" class="logo"><i>Webfusion. You. The web. Connected.</i></a></h1>			  
+			  <div class="loginBox">
+				  <br class="clear" />
+				  <h2><span>Webmail | Log in</span></h2>
+				  <p>Welcome to 123-reg Webmail, to access your e-mail<br />please enter your username and password below</p>
+				  <p class="errormsg hidden">
+					<span class="errormess" id="error">Login Failed</span>
+				  </p>
+				  <form action="/" method="post"  id="login_form">
+					  <table>
+						  <tr>
+							  <td>
+								  <p>Email address: </p>
+							  </td>
+							  <td>
+								  <input type="text" class="text" name="account"/>
+							  </td>
+						  </tr>
+						  <tr>
+							  <td>
+								  <p>Password: </p>
+							  </td>
+							  <td>
+								  <input type="password" class="text" name="password"/>
+							  </td>
+						  </tr>
+						  <tr>
+							  <td></td>
+							  <td style="text-align: left;">
+								<input type="submit" name="submit_login" id="submit_login"  value="Login" style="float: left; margin-top: 4px; margin-right: 10px;" />
+								<img src="library/images/page_loading_spinner.gif" style="display:none;" alt="" id="pageLoading" />
+							</td>
+						  </tr>
+					  </table>					  
+				  </form>
+				  <div class="footer noBackground">
+					  <p>
+							You can login to the old webmail <a href=" http://oldwebmail.123-reg.co.uk">here</a>, this is available to
+							help you transition to the new version until August 31<sup>st</sup> 2011.
+					  </p>
+				  </div>
+				  <div class="footer">
+					<p><span class="red"><strong>Note:</strong></span>
+					If you are a POP HOST customer please log in with "mailboxusername@pophost.123-reg.co.uk"</p>
+				  </div>
+				  <div class="footer">
+						 <p>
+							<span class="red"><strong>Note:</strong></span>
+							Your calendar contents from your old webmail were not able
+							to be automatically imported, please visit the <a href="http://123-support.co.uk/default.aspx?categoryid=eaa1f9b1-6f48-4d0c-8622-e76c5a4819e4" target="_blank">FAQ's</a> for information
+							on how to complete this.
+						 </p>
+				  </div>
+				  <div class="footer">	
+					  <p class="hidden">
+						  <span class="red"><strong>Note:</strong></span>
+						  This webmail session is not SSL-secured. To log in securely, please visit <a href="https://webmail.123-reg.co.uk">https://webmail.123-reg.co.uk</a>.
+					  </p>
+				  </div>
+				  <div class="footer">
+					  <h3>Help information</h3>
+					  <p class="help">Want to learn more about your new webmail and its<br />functions, check out our new <a href="http://123-support.co.uk/default.aspx?categoryid=eaa1f9b1-6f48-4d0c-8622-e76c5a4819e4" target="_blank">FAQ's</a> for more information.</p>
+				  </div>
+				</div>
+		  </div>
+	  </div>
+  </body>
+</html>

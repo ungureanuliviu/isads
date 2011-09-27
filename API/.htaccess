@@ -1,0 +1,26 @@
+# enable symbolic links
+Options +FollowSymLinks
+
+## REWRITE DEFAULTS ###
+RewriteEngine On
+RewriteBase /
+ 
+## REQUIRE SUBDOMAIN ###
+#RewriteCond %{HTTP_HOST} !^$
+#RewriteCond %{HTTP_HOST} !^subdomain\.domain\.tld$ [NC]
+#RewriteRule ^/(.*)$ http://subdomain.domain.tld/$1 [L,R=301]
+ 
+## SEO REWRITES ###
+RewriteRule ^user/(.*)/(.*)$    /API/index.php?type=users&user=$1&method=$2 [L,NC] 
+
+# FOR login/logout methods
+RewriteRule ^session/(.*)/$ /API/index.php?&type=session&method=$1 [L,NC]
+
+# ADS API
+RewriteRule ^ads/(.*)/$  /API/index.php?type=ads&method=$1 [L,NC]
+
+# Comments API
+RewriteRule ^comments/(.*)/$  /API/index.php?type=comments&method=$1 [L,NC]
+
+RewriteRule ^(.*)/(.*)$         /API/index.php?method=$1 [L,NC]
+

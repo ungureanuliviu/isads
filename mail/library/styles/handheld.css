@@ -1,0 +1,49 @@
+.loginContent{
+	width: 99%;
+	margin: 0 12px 12px 12px;
+}
+
+.loginBox {
+	width: 85%;
+}
+.login .loginBox h2{
+	height: 45px !important;
+}
+.login .loginBox h2 span{
+	height: 25px;
+	font-size: 18px !important;
+}
+.login .loginBox p,
+.login .footer p{
+	font-size: 12px !important;
+}
+.login .loginBox td p,
+.login .loginBox h3{
+	font-size: 14px;
+}
+.login .loginBox h2 span {
+    background: url("../images/ic_webmail_mobile.png") no-repeat scroll left top transparent;
+    display: block;
+    font-size: 22px;
+    height: 26px;
+    padding-left: 57px;
+    padding-top: 10px;
+}
+.login a.logo {
+    background: url("../images/logo_mobile.png") no-repeat scroll left top transparent;
+    display: block;
+    height: 95px;
+    margin-left: -20px;
+    outline: medium none;
+    text-decoration: none;
+    width: 290px;
+}
+.login .loginBox input.text{
+	width: 150px;
+	padding-right: 0 !important;
+}
+.login .loginBox input[type="submit"] {
+    background: url("../images/bg_button_green_mobile.png") no-repeat scroll left top transparent;
+	width: 160px;
+	margin-right: 0 !important;
+}

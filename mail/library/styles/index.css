@@ -1,0 +1,201 @@
+@font-face {
+	font-family: "vagrounded-bold";
+	src: url('../type/vagrounded.eot');
+	src: local('d'),
+	url('../type/vagrounded.woff') format('woff'),
+	url('../type/vagrounded.svg#webfontwxyBCsUP') format('svg');
+}
+@font-face {
+	font-family: "vagrounded-light";
+	src: url('../type/vagrounded-light.eot');
+	src: local('d'),
+	url('../type/vagrounded-light.woff') format('woff'),
+	url('../type/vagrounded-light.svg#webfontwxyBCsUP') format('svg');
+}
+
+h1,h2,h3,h4{
+	font-family: vagrounded-bold, arial,verdana,helvetica,sans-serif;
+	font-weight: normal;
+	padding: 0;
+	margin: 0;
+	color: #de004d;
+}
+
+body{
+	background: #a3d5ef url("../images/bg_image.png") left top repeat-x;
+	padding: 0;
+	margin: 0;
+}
+
+.full_width{
+	text-align: center;
+}
+
+i{
+	display: none;
+}
+
+.loginContent{
+	position: relative;
+	margin: auto;
+	width: 440px;
+	height: 400px;
+	text-align: left;
+}
+.loginBox{
+	background-color: #ffffff;
+	width: 410px;
+	height: auto;
+	display: block;
+	padding: 15px 15px 20px 15px;
+	 -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -khtml-border-radius: 15px;
+     border-radius: 15px;
+	 behavior: url(/library/styles/PIE.htc);
+}
+
+.login a.logo{
+	background: transparent url("../images/logo.png") left top no-repeat;
+	width: 431px;
+	height: 141px;
+	display: block;
+	text-decoration: none;
+	outline: none;
+	margin-left: -20px;
+}
+
+.login .loginBox h2{
+	margin-top: -15px;
+	background: transparent url("../images/transparent-black-dotted-bg.png") left bottom repeat-x;
+	height: 60px;
+}
+
+.login .loginBox h2 span{
+	background: transparent url("../images/ic_webmail.png") left top no-repeat;	
+	display: block;
+	font-size: 22px;
+    height: 46px;
+    padding-left: 57px;
+    padding-top: 10px;
+}
+
+.login .loginBox p{
+	font-family: arial,verdana,sans-serif;
+	font-weight: normal;
+	padding: 0;
+	margin: 0;
+	color: #000000;
+	margin-top: 15px;
+	font-size: 15px;
+}
+
+.login .loginBox td{
+	text-align: right;
+}
+
+.login .loginBox table{
+	margin-top: 20px;
+	margin-left: 10px;
+}
+
+.login .loginBox table td{
+	padding-bottom: 7px;
+}
+
+.login .loginBox td p{
+	margin-top: 0px;
+	font-size: 15px;
+	font-family: vagrounded-bold, arial,verdana,helvetica,sans-serif;
+	color: #de004d;
+}
+
+.login .loginBox input.text{
+   -moz-border-radius: 8px;
+   -webkit-border-radius: 8px;
+   -khtml-border-radius: 8px;
+    border-radius: 8px;
+	width: 280px;
+	height: 31px;
+	border: none;
+	padding-left: 5px;
+	padding-right: 5px;
+	border: 1px solid #dadada;
+}
+
+.login .loginBox input[type='submit']{
+	background: transparent url("../images/bg_button_green.png") left top no-repeat;
+	width: 127px;
+	height: 29px;
+	border: none;
+	padding-bottom: 3px;
+	border: none;
+	color: #ffffff;
+	font-family: vagrounded-bold, arial,verdana,helvetica,sans-serif;
+	font-weight: normal;
+	padding-bottom: 3px;
+	text-align: center;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.login .footer{
+	background: transparent url("../images/transparent-black-dotted-bg.png") left top repeat-x;
+	margin-top: 15px;
+}
+
+.login .footer p{
+	padding-top: 15px;
+	font-size: 13px;
+}
+
+.login .footer a,
+.red{
+	color: #de004d;
+}
+
+p.errormsg {
+    background:#FCE7ED none 0 0 repeat;
+    border-bottom: 1px solid #FFAFC7;
+    border-top: 1px solid #FFAFC7;
+    margin-bottom: 9px;
+    margin-top: 9px;
+    padding: 4px;
+}
+
+.errormess {
+    background: transparent url("../images/icon_exclamation_onpurple_small.png") 5px center no-repeat;
+    padding-bottom: 4px;
+    padding-left: 30px;
+    padding-right: 10px;
+    padding-top: 4px;
+	font-size: 14px;
+	display: block;
+}
+
+.hidden{
+	display: none;
+}
+
+.login .loginBox h3 {
+	margin-top: 20px;
+	font-size: 16px;
+	padding-top: 15px;
+	background: transparent url("../images/transparent-black-dotted-bg.png") left top repeat-x;
+}
+.login .loginBox p.help {	
+	padding-left: 35px;
+	margin-top: 8px;
+	padding-top: 0;
+	background: url("../images/newsignup.gif") no-repeat left 5px;
+}
+
+.noBackground{
+	background: none !important;
+	font-size: 14px !important;
+}
+
+.noBackground p{
+    font-size: 14px !important;
+    padding-top: 0 !important;
+}
