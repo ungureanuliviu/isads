@@ -73,6 +73,7 @@ Client.ajax = {};
  *		response: {"is_success":1,"ad":{"id":852,"title":"teasdgds","content":"dgsgds","price":"32","address":"dsdgsdgs","cat_id":"4","user_id":"1","comments":[],"total_comments":0,"views":0,"source":"iasianunta.info","email":"smartliviu@gmail.com"}}
  **/
 Client.ajax.call = function(pCallObj){
+      pCallObj.params.client = "iasianunta.info";
       $.ajax({
           url: pCallObj.methodUrl,
           type: "POST",

@@ -2,7 +2,8 @@
     session_start();
     header('Cache-Control: no-cache, must-revalidate');
     header('Expires: Mon, 26 Jul 2097 05:00:00 GMT');
-    header('Content-type: application/json');    
+    header('Content-type: application/json');        
+    header('Accept: application/json');
     
     include_once "../php_files/Log.php";
     include_once '../php_files/User.php';
@@ -11,7 +12,32 @@
     date_default_timezone_set("Europe/Bucharest");
     $dbMan  = new DBManager();
     $log    = new Log();
-    $log->lwrite("method: " . $_SERVER['REQUEST_URI'] . "\n GET " . print_r($_GET, true) . " \nPOST: ". print_r($_POST, true) . "=====================================" );    
+    $log->lwrite( file_get_contents("php://input") . " Server: " . print_r($_SERVER, true) . "\n\n" . "method: " . $_SERVER['REQUEST_URI'] . "\n GET " . print_r($_GET, true) . " \nPOST: ". print_r($_POST, true) . "=====================================" );        
+    $publicMethods = array("createUser", "get_all");
+    
+    if(!in_array($_POST['method'], $publicMethods)){            
+        // login 
+        if (!isset($_SERVER['PHP_AUTH_USER']) && !isset ($_POST['client'])) {
+            header('WWW-Authenticate: Basic realm="Login"');
+            header('HTTP/1.0 401 Unauthorized');        
+        } else {  
+            if(isset($_SERVER['PHP_AUTH_USER']))
+                $_POST = json_decode (file_get_contents("php://input"), true);            
+            
+            $client = $_POST['client'];        
+            if(strcmp($client, "android") == 0  && $_SESSION['is_logged_in'] == 0){                
+                $result = $dbMan->login($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
+                if($result['is_success'] == 1){                             
+                        $_SESSION['is_logged_in'] = 1;
+                } else{
+                    print(json_encode($result));           
+                    $_SESSION['is_logged_in'] = 1;
+                }
+            }    
+        }
+    }        
+
+    
     //print_r($_GET);
     if(!empty($_GET)){
 		switch ($_GET['type']){
