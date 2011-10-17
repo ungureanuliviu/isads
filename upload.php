@@ -13,7 +13,7 @@
        if(move_uploaded_file($value['tmp_name'], $target_path)) {
           $image = WideImage::load($target_path);          
           $log->lwrite("target: " . $target_path);
-          $resized = $image->resize(100);
+          $resized = $image->resize(80);
           $resized->saveToFile(getcwd()."/library/img/ads_img/th/".$time . "_" . $value['name']);           
           if(count($_FILES) != 1)
             $resultArray[count($resultArray)] = array("name" => $time . "_". $value['name'], "url" => "/library/img/ads_img/".$time . "_" .$value['name']);                    

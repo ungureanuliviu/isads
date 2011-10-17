@@ -26,11 +26,11 @@
 //        print_r($dbMan->removeComment(3, 1));
 //    }
     
-    $submit_url = "http://iasianunta.info/API/session/login/"; 
+    $submit_url = "http://iasianunta.info/API/alerts/remove/"; 
 
     $curl = curl_init();    
     
-    $params = array("client" => "android", "user_name" => "liviu2", "user_password" => "test");
+    $params = array("client" => "android", "user_id" => "1", "id" => 59);
     curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ; 
     curl_setopt($curl, CURLOPT_USERPWD, "liviu2:test");     
     curl_setopt($curl, CURLOPT_HEADER, true); 
@@ -42,6 +42,10 @@
 
     $result = split("application/json", curl_exec($curl) ); 
     
-    print_r($result[1]); 
+    print_r($result); 
     curl_close($curl);     
+
+    //print_r($dbMan->addAlert("My new alert", "100,alexandru,test", 1, 2));
+    //print_r($dbMan->getAllAlerts(2));
+    //print_r($dbMan->removeAlert(12, 1));
 ?>

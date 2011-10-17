@@ -381,6 +381,8 @@
                      ads.cat_id,
                      ads.views,
                      ads.user_id,
+                     (select name from categories where categories.id = ads.cat_id) as cat_name,
+                     (select name from users where users.id = ads.user_id) as user_name,
                      comments.id as com_id,
                      comments.title as com_title,
                      comments.ad_id as com_ad_id,
@@ -405,6 +407,8 @@
                      ads.cat_id,
                      ads.views,
                      ads.user_id,
+                     (select name from categories where categories.id = ads.cat_id) as cat_name,
+                     (select name from users where users.id = ads.user_id) as user_name,
                      comments.id as com_id,
                      comments.title as com_title,
                      count(comments.id) as total_comments,
@@ -437,6 +441,15 @@
                 $images = $this->getAdImages($row['id']);
                 $ads[$index]['images']  = $images['images'];
                 
+                // unset some things
+                unset ($ads[$index]['com_id']);
+                unset ($ads[$index]['com_title']);
+                unset ($ads[$index]['com_content']);
+                unset ($ads[$index]['com_user_id']);
+                unset ($ads[$index]['com_date']);
+                unset ($ads[$index]['com_rating']);
+                unset ($ads[$index]['com_username']);                
+
                 $index++;
             }
             $returnArray['ads'] = $ads;            
@@ -564,17 +577,54 @@
         return $retArray;
     }
 
-//
-//	public function addComment($commentAdId, $commentTitle, $commentTitle, $commetOwnerId){
-//		$insertQ = "INSERT INTO comments(title, content, ad_id, owner_user_id, date, rating) VALUES ('" . mysql_real_escape_string($commentTitle) . "', '" .mysql_real_escape_string($commentTitle) . "'," . $commetOwnerId	. "," . time() . ",0)";
-//        $result = mysql_query($insertQ)  or ErrorHandler::handle(mysql_error() . "\n Query with error " . $insertQ. "\n ");
-//        $returnArray = array("is_success" => 0, "comment" => NULL);
-//
-//        if($result != false){
-//            $returnArray['is_success'] = 1;
-//            $pComment->setId(mysql_insert_id());
-//            $returnArray['comment'] = $pComment->toArray();
-//        }
-//	}
+    // Alerts
+    public function addAlert($alertTitle, $alertFilters, $alertUserId, $alertCategoryId){
+        $now = time();
+        $insertQ = "INSERT INTO alerts(title, filters, user_id, cat_id, added_date, last_checked_date) VALUES ('" . mysql_real_escape_string($alertTitle) . "', '" .mysql_real_escape_string($alertFilters) . "'," . $alertUserId	. "," . $alertCategoryId . "," . $now . "," . $now . ")";
+        $result = mysql_query($insertQ)  or ErrorHandler::handle(mysql_error() . "\n Query with error " . $insertQ. "\n ");
+        $returnArray = array("is_success" => 0, "alert" => NULL);
+
+        if($result != false){
+            $returnArray['alert']  = array("id"=>  mysql_insert_id(), "title" => $alertTitle, "filters" => split(",", $alertFilters), "user_id" => $alertUserId, "cat_id" => $alertCategoryId, "added_date"=>$now, "last_checked_date"=>$now);
+            $returnArray['is_success'] = 1;
+        }
+        
+        return $returnArray;
+    }
+    
+    // Alerts
+    public function getAllAlerts($userId){
+        $selectQ        = "SELECT * FROM alerts WHERE user_id = " . $userId; 
+        $results        = mysql_query($selectQ)  or ErrorHandler::handle(mysql_error() . "\n Query with error " . $selectQ. "\n ");
+        $returnArray    = array("is_success" => 0, "alerts" => NULL);
+        
+        if(mysql_num_rows($results) >= 0){
+            $index = 0;
+            while($row = mysql_fetch_assoc($results)){
+                $row['filters'] = split(",", $row['filters']);
+                $returnArray['alerts'][$index] = $row;
+                $index++;
+            }
+            $returnArray['is_success'] = 1;            
+        } else{
+            $returnArray['alerts'] = array();
+        }        
+        
+        return $returnArray;
+    }    
+    
+    // Alerts
+    public function removeAlert($alertId, $alertUserId){        
+        $deleteQ = "DELETE FROM alerts WHERE id = " . $alertId . " AND user_id = " . $alertUserId;
+        $result = mysql_query($deleteQ)  or ErrorHandler::handle(mysql_error() . "\n Query with error " . $deleteQ. "\n ");
+        $returnArray = array("is_success" => 0, "alert" => NULL);
+
+        if(mysql_affected_rows() > 0){
+            $returnArray['alert']  = array("id"=>  $alertId, "user_id" => $alertUserId);
+            $returnArray['is_success'] = 1;            
+        }        
+        
+        return $returnArray;
+    }    
 }
 ?>

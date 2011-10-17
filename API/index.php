@@ -1,5 +1,7 @@
-<?php
+<?php    
+    
     session_start();
+    
     header('Cache-Control: no-cache, must-revalidate');
     header('Expires: Mon, 26 Jul 2097 05:00:00 GMT');
     header('Content-type: application/json');        
@@ -11,36 +13,84 @@
     include_once '../php_files/DBManager.php';    
     date_default_timezone_set("Europe/Bucharest");
     $dbMan  = new DBManager();
-    $log    = new Log();
-    $log->lwrite( file_get_contents("php://input") . " Server: " . print_r($_SERVER, true) . "\n\n" . "method: " . $_SERVER['REQUEST_URI'] . "\n GET " . print_r($_GET, true) . " \nPOST: ". print_r($_POST, true) . "=====================================" );        
-    $publicMethods = array("createUser", "get_all");
+    $log    = new Log();    
+    $publicMethods = array("createUser", "ads_get_all", "comments_get_all");
     
-    if(!in_array($_POST['method'], $publicMethods)){            
+    if(empty ($_POST)){        
+        $_POST = json_decode (file_get_contents("php://input"), true);     
+    }
+                
+    if(!in_array($_GET['type']."_".$_GET['method'], $publicMethods)){            
         // login 
         if (!isset($_SERVER['PHP_AUTH_USER']) && !isset ($_POST['client'])) {
             header('WWW-Authenticate: Basic realm="Login"');
-            header('HTTP/1.0 401 Unauthorized');        
-        } else {  
-            if(isset($_SERVER['PHP_AUTH_USER']))
-                $_POST = json_decode (file_get_contents("php://input"), true);            
-            
-            $client = $_POST['client'];        
+            header('HTTP/1.0 401 Unauthorized');                    
+            return;
+        } else {                    
+            $client = $_POST['client'];                
             if(strcmp($client, "android") == 0  && $_SESSION['is_logged_in'] == 0){                
-                $result = $dbMan->login($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
+                $result = $dbMan->login($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);                
                 if($result['is_success'] == 1){                             
                         $_SESSION['is_logged_in'] = 1;
                 } else{
-                    print(json_encode($result));           
-                    $_SESSION['is_logged_in'] = 1;
+                    print(json_encode(array("is_success"=>0, "message"=>"Auth failed")));
+                    $_SESSION['is_logged_in'] = 0;
+                    return;
                 }
             }    
-        }
-    }        
-
+        }                                                           
+    }    
+    
+    $log->lwrite( file_get_contents("php://input") . " Server: " . print_r($_SERVER, true) . "\n\n" . "method: " . $_SERVER['REQUEST_URI'] . "\n GET " . print_r($_GET, true) . " \nPOST: ". print_r($_POST, true) . "=====================================" );        
     
     //print_r($_GET);
     if(!empty($_GET)){
 		switch ($_GET['type']){
+                        case "alerts":
+                                switch ($_GET['method']){
+                                    case "get_all":
+                                        /**
+                                         * Get all alerts for a user.
+                                         * params:
+                                         *      user_id : user's id
+                                         * return:
+                                         *      a json with all alerts
+                                         */
+                                        $userId = $_POST['user_id'];
+                                        $result = $dbMan->getAllAlerts($userId);
+                                        print(json_encode($result));
+                                    break;
+                                    case "add":
+                                        /** public function addAlert($alertTitle, $alertFilters, $alertUserId, $alertCategoryId){
+                                         * Create a new alert for a given user
+                                         * params:
+                                         *      title:      alert's title
+                                         *      filters:    an comma separated string with all filter data
+                                         *      user_id:    user's id
+                                         *      cat_id      a category id.
+                                         */
+                                         $title     = $_POST['title'];
+                                         $filters   = $_POST['filters'];
+                                         $userId    = $_POST['user_id'];
+                                         $catId     = $_POST['cat_id'];
+                                         $result    = $dbMan->addAlert($title, $filters, $userId, $catId);
+                                         print($result);
+                                    break;
+                                    case 'remove':
+                                        /**
+                                         * public function removeAlert($alertId, $alertUserId){  
+                                         * Remove a alert
+                                         * params:
+                                         *      user_id: owner's id
+                                         *      id: alert's id
+                                         */
+                                        $userId     = $_POST['user_id'];
+                                        $alertId    = $_POST['id'];
+                                        $result     = $dbMan->removeAlert($alertId, $userId);
+                                        print(json_encode($result));
+                                    break;
+                                }
+                                break;
 			case "session":
 				switch ($_GET['method']){
 					case "login":
@@ -61,11 +111,22 @@
 						if($result['is_success'] == 1){
 							// clear the current user details from session
 							unset($_SESSION['user']);
+                                                        $_SESSION['is_logged_in'] = 0;
 							session_destroy();
 						}
 						print(json_encode($result));
 						break;
 				}
+			break;
+			case "categories":
+                            switch ($_GET['method']){
+                                case  "get_all":                        
+                                     // get categories
+                                    $result = $dbMan->getCategories();
+                                    print(json_encode($result));       
+                                    
+                                    break;                                    
+                            }				
 			break;
 			case "ads":
 				switch ($_GET['method']){
