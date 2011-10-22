@@ -13,6 +13,7 @@
         private $source;
         private $userId;
         private $views;
+        private $price;
     
         function __construct() {
             $this->title = "";
@@ -27,8 +28,9 @@
             $this->source  = "EVNT";
             $this->userId = -1;
             $this->views = 0;
-        }
-        
+            $this->price = 0;
+        }       
+
         public function Ad($pTitle, $pContent, $pPhone, $pAddress, $pEmail, $pTime){
             $this->title = $pTitle;
             $this->content = $pContent;
@@ -42,8 +44,24 @@
             $this->source  = "EVNT";
             $this->userId = -1;
             $this->views = 0;
+            $this->price = 0;
         }
         
+        public function getPrice(){
+            return $this->price;
+        }
+        
+        public function setPrice($pPrice){
+            $this->price = $pPrice;
+            return $this;
+        }
+        
+        public function getUserId(){
+            return $this->userId;
+        }
+        
+
+
         public function getTitle()   { return $this->title; } 
         public function getContent() { return $this->content; } 
         public function getPhone()   { return $this->phone; } 
@@ -61,10 +79,7 @@
             $this->views = $pViews;
             return $this;
         }
-
-        public function getUserId(){
-            return $this->userId;
-        }
+        
         public function setUserId($pUserId){
             $this->userId = $pUserId;
             return $this;
@@ -75,6 +90,11 @@
             else
                 return time();
         }
+        
+        public function getImages(){
+            return $this->arrayImages;
+        }
+        
         public function setDate($x){$this->date = $x; }
         public function addImage($x){$this->arrayImages[count($this->arrayImages)] = $x; }
         public function getCategoryName() { return $this->categoryName; }
@@ -98,9 +118,6 @@
                         "Images: " . print_r($this->arrayImages, true) . "\n" . 
                         "UserId: " . $this->userId . "\n";
             return $str;                    
-        }
-        
-        
-
+        }                    
 }
 ?>

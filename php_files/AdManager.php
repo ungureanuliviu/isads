@@ -4,6 +4,7 @@
     include_once "DBManager.php";
     include_once "ErrorHandler.php";
     include_once 'interfaces.php';
+    include_once 'AlertsManager.php';
     
 
 class AdManager implements ICollector{
@@ -15,11 +16,13 @@ class AdManager implements ICollector{
         private $dbMan;
         private $totalAds;
         private $myEmail = "smartliviu@gmail.com";
+        private $alertsMan;
         
         function __construct() {
-            $this->dbMan    = new DBManager();
-            $this->evnt_api = new EVNT_API();         
-            $this->totalAds = 0;
+            $this->dbMan        = new DBManager();
+            $this->evnt_api     = new EVNT_API();         
+            $this->totalAds     = 0;
+            $this->alertsMan    = new AlertsManager();
         }
         
         public function collect(){
@@ -51,8 +54,9 @@ class AdManager implements ICollector{
         
         public function onAdCollected($ad){            
             if(strlen($ad->getContent()) > 10){
-                $this->dbMan->addAd($ad);
+                $newAd = $this->dbMan->addAdWithParams($ad->getTitle(), $ad->getContent(), $ad->getPrice(), $ad->getAddress(), $ad->getCategoryId(), $ad->getPhone(), $ad->getEmail(), $ad->getUserId(), $ad->getImages(), "LEI");
                 $this->totalAds++;
+                $this->alertsMan->onAdAdded($newAd);
             }
         }     
 }

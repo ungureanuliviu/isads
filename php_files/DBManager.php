@@ -36,6 +36,7 @@
         public static $CATEGORY_LOCURI_DE_MUNCA = "Locuri de munca";
         public static $CATEGORY_MEDITATII   = "Meditatii";
         private $log;
+        private $mAdNotifier;
 
 
         // data
@@ -57,6 +58,13 @@
             mysql_select_db($this->CONFIG['db']['dbname']);    
     }
     
+    public function setAdNotifier($pAdNotifier){
+        $this->log->lwrite("set notifier " . print_r($pAdNotifier, true));
+        $this->mAdNotifier = $pAdNotifier;
+        return $this;
+    }
+
+
     public function getLastUpdateDate($pCatName, $pSource){
         
         $selectQuery  = "SELECT date FROM ads WHERE cat_id = (SELECT c.id FROM categories c where c.name='". mysql_real_escape_string($pCatName) . "' LIMIT 1) AND source='".mysql_real_escape_string($pSource) ."' order by date DESC LIMIT 1";
@@ -93,16 +101,25 @@
             ErrorHandler::handle(mysql_error() . "\n Query with error " . $insertQuery . "\n");
         }
         
+        if(isset ($this->mAdNotifier)){            
+            $this->mAdNotifier->onAdAdded($pAd);
+        } else{
+            $this->log->lwrite("no ad notifier specified");
+        }
         return $pAd;
     }        
     
-    public function addAdWithParams($pTitle, $pContent, $pPrice, $pAddress, $pCategoryId, $pPhone, $pEmail, $pUserId, $pSource, $pImages){                
+    public function addAdWithParams($pTitle, $pContent, $pPrice, $pAddress, $pCategoryId, $pPhone, $pEmail, $pUserId, $pSource, $pImages, $pCurrency){                
+        if(strlen($pCurrency) == 0)
+            $pCurrency = "LEI";
         
-        $insertQuery = "INSERT INTO ads(title, content, phone, email, address, cat_id, date, source, user_id, price) VALUES ".
+        $insertQuery = "INSERT INTO ads(title, content, phone, email, address, cat_id, date, source, user_id, price, currency) VALUES ".
                         "('". mysql_real_escape_string($pTitle) ."','".mysql_real_escape_string($pContent)."','".
                         mysql_real_escape_string($pPhone) ."','" . mysql_real_escape_string($pEmail) . "','" .
                         mysql_real_escape_string($pAddress) . "'," . $pCategoryId. "," . time() .",'". 
-                        mysql_real_escape_string($pSource) ."',".$pUserId. ",'" . mysql_real_escape_string($pPrice). "')";        
+                        mysql_real_escape_string($pSource) ."',".$pUserId. ",'" . mysql_real_escape_string($pPrice). "', '" .
+                        mysql_real_escape_string($pCurrency) . "')";        
+        
         $result     = mysql_query($insertQuery) or ErrorHandler::handle(mysql_error() . "\n Query with error " . $insertQuery . "\n");
         $retArray   = array("is_success" => 0, "ad" => NULL);
         $newAdId    = mysql_insert_id();        
@@ -130,8 +147,17 @@
                                     "views" => 0,
                                     "source" => $pSource,
                                     "email" => $pEmail,
+                                    "phone" => $pPhone,
+                                    "price" => $pPrice,
+                                    "currency" => $pCurrency,
                                     "images" => $pImages);
-        }       
+        }
+        
+        if(isset($this->mAdNotifier)){            
+            $this->mAdNotifier->onAdAdded($retArray);
+        } else{
+            $this->log->lwrite("no ad notifier specified");
+        }        
         
         return $retArray;
     }            
@@ -378,6 +404,7 @@
                      ads.address,
                      ads.date,
                      ads.source,
+                     ads.currency,
                      ads.cat_id,
                      ads.views,
                      ads.user_id,
@@ -398,6 +425,7 @@
         
             $selectQ = " SELECT ads.id,
                      ads.title,
+                     ads.currency,
                      ads.content,
                      ads.phone,
                      ads.email,
@@ -594,20 +622,20 @@
     
     // Alerts
     public function getAllAlerts($userId){
-        $selectQ        = "SELECT * FROM alerts WHERE user_id = " . $userId; 
+        $selectQ        = "SELECT * FROM alerts WHERE user_id = " . $userId . " ORDER BY total_ads_since_last_check DESC"; 
         $results        = mysql_query($selectQ)  or ErrorHandler::handle(mysql_error() . "\n Query with error " . $selectQ. "\n ");
         $returnArray    = array("is_success" => 0, "alerts" => NULL);
         
         if(mysql_num_rows($results) >= 0){
             $index = 0;
             while($row = mysql_fetch_assoc($results)){
-                $row['filters'] = split(",", $row['filters']);
+                $row['filters'] = json_decode(stripslashes($row['filters']), true);
                 $returnArray['alerts'][$index] = $row;
                 $index++;
             }
             $returnArray['is_success'] = 1;            
         } else{
-            $returnArray['alerts'] = array();
+            $returnArray['alerts'] = array(); 
         }        
         
         return $returnArray;
@@ -626,5 +654,35 @@
         
         return $returnArray;
     }    
+    
+    public function getAlertsByCategoryId($catId){
+        $selectQ        = "SELECT id, filters FROM alerts WHERE cat_id = " . $catId; 
+        $results        = mysql_query($selectQ)  or ErrorHandler::handle(mysql_error() . "\n Query with error " . $selectQ. "\n ");
+        $returnArray    = array("is_success" => 0, "alerts" => NULL);
+        
+        if(mysql_num_rows($results) >= 0){
+            $index = 0;
+            while($row = mysql_fetch_assoc($results)){								
+                $row['filters'] = json_decode(stripslashes($row['filters']), true);
+                $returnArray['alerts'][$index] = $row;
+                $index++;
+				$this->log->lwrite("alert: " . print_r($row, true));
+            }
+            $returnArray['is_success'] = 1;            
+        } else{
+            $returnArray['alerts'] = array();
+        }        
+        
+        return $returnArray;        
+    }
+    
+    public function addToAlert($adId, $alertId){
+        $this->log->lwrite("adToAlert: adID=" . $adId . " alertID=" . $alertId);
+        $insertQ = "INSERT INTO alert_ads(alert_id, ad_id, added_date) VALUES(" . $alertId . ", " . $adId . ", " . time() . ")";
+        $updateAdsCounter = "UPDATE alerts SET total_ads_since_last_check=total_ads_since_last_check+1 WHERE id=" . $alertId;
+        
+        mysql_query($insertQ);
+        mysql_query($updateAdsCounter);
+    }
 }
 ?>

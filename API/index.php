@@ -11,9 +11,18 @@
     include_once '../php_files/User.php';
     include_once '../php_files/Ad.php';
     include_once '../php_files/DBManager.php';    
+    include_once '../php_files/AlertsManager.php';
+    
+    
     date_default_timezone_set("Europe/Bucharest");
-    $dbMan  = new DBManager();
-    $log    = new Log();    
+    $dbMan      = new DBManager();
+    $log        = new Log();    
+    $alertsMan   = new AlertsManager();
+        
+    // Set notifiers
+    $dbMan->setAdNotifier($alertsMan->getAdNotifier());
+    
+    // Define public methods
     $publicMethods = array("createUser", "ads_get_all", "comments_get_all");
     
     if(empty ($_POST)){        
@@ -65,7 +74,11 @@
                                          * Create a new alert for a given user
                                          * params:
                                          *      title:      alert's title
-                                         *      filters:    an comma separated string with all filter data
+                                         *      filters:    a json string filters. For the moment we have just a few filters supported:
+                                         *                      1. Content filter: {\"type\":\"content\",\"constraints\":[\"red\",\"blue\",\"test\",\"20\"]}
+                                         *                      2. Price filter: {\"type\":\"price\",\"max\":\"10\",\"min\":\"5\",\"currency\":\"EU\"}
+                                         *                  You can add more filters in one alert as a JSON array [{content_filter: data}, {price_filter: data}]
+                                         *                      
                                          *      user_id:    user's id
                                          *      cat_id      a category id.
                                          */
@@ -141,9 +154,9 @@
                                             $result = $dbMan->getPageAds($page, $categoryId, $adsPerPage);
                                             print(json_encode($result));
                                             break;			
-                                        case "add":
+                                        case "add":                                            
                                             $result = $dbMan->addAdWithParams($_POST['title'], $_POST['content'], $_POST['price'], $_POST['address'], $_POST['category_id'],
-                                                                              $_POST['phone'], $_POST['email'], $_POST['user_id'], $_POST['source'], $_POST['images']);
+                                                                              $_POST['phone'], $_POST['email'], $_POST['user_id'], $_POST['source'], $_POST['images'], $_POST['currency']);
                                             print(json_encode($result));
                                             break;
 				}

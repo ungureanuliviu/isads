@@ -46,7 +46,7 @@ Client.ajax = {};
  * 5. /API/comments/get_all/
  *		Get all comments for an ad
  *		params:
- *				ad_id: the ad id
+ *                      ad_id: the ad id
  *		response: {"is_success":1,"comments":[{"id":"254","title":"dsgdsgwegwe","content":"dsgdsgwegwe","ad_id":"784","owner_user_id":"1","date":"1316418703","rating":"0","user_name":"Ungureanu Liviu","user_id":"1"},{"id":"259","title":"dsgdsgds","content":"dsgdsgds","ad_id":"784","owner_user_id":"1","date":"1316418989","rating":"0","user_name":"Ungureanu Liviu","user_id":"1"},{"id":"258","title":"dsgdwsgwe","content":"dsgdwsgwe","ad_id":"784","owner_user_id":"1","date":"1316418715","rating":"0","user_name":"Ungureanu Liviu","user_id":"1"}]}
  *
  * 6. /API/comments/remove/

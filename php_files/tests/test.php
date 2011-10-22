@@ -26,11 +26,11 @@
 //        print_r($dbMan->removeComment(3, 1));
 //    }
     
-    $submit_url = "http://iasianunta.info/API/alerts/remove/"; 
+    $submit_url = "http://iasianunta.info/API/alerts/add/"; 
 
     $curl = curl_init();    
-    
-    $params = array("client" => "android", "user_id" => "1", "id" => 59);
+    $json = json_encode(array(array("type"=>"price", "max"=>"10", "min"=>"5", "currency"=>"EU"), array("type"=>"content", "constraints"=>(array("red", "blue", "test", "20")))));
+    $params = array("client" => "android", "user_id" => "1", "title" => "LG TV", "filters" => $json, "cat_id"=>1);
     curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ; 
     curl_setopt($curl, CURLOPT_USERPWD, "liviu2:test");     
     curl_setopt($curl, CURLOPT_HEADER, true); 

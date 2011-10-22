@@ -635,7 +635,7 @@ jQ(document).ready(function(){
     
     // categories init
     App.categories.init(CURRENT_CAT, ADS_CATEGORIES);
-
+    
     // pages
     App.ads.init(BASE_ID);
     App.pages.init(TOTAL_PAGES, CURRENT_PAGE, ADS_PER_PAGE);

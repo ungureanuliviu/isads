@@ -244,10 +244,10 @@
         </div>        
      <!-- footer -->
      <script type="text/javascript">
-        var CURRENT_PAGE  = <?php echo($currentPage); ?>;;
+        var CURRENT_PAGE  = <?php echo($currentPage); ?>;
         var TOTAL_PAGES   = <?php echo($totalPages); ?>;
         var ADS_PER_PAGE  = <?php echo($adsPerPage); ?>; 
-        var ADS_JSON      = '<?php echo(json_encode($results)); ?>';
+        //var ADS_JSON      = '<?php echo(json_encode($results)); ?>';
         var ADS_CATEGORIES= '<?php echo(json_encode($categories)); ?>';
         var CURRENT_CAT   = '<?php echo(json_encode(array("name" => $categoryName, "id" => $currentCategoryId))); ?>';
         var BASE_ID       = '<?php echo($htmlAdID); ?>';		
