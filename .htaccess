@@ -1,0 +1,20 @@
+# enable symbolic links
+Options +FollowSymLinks
+
+## REWRITE DEFAULTS ###
+RewriteEngine On
+RewriteBase /
+ 
+## REQUIRE SUBDOMAIN ###
+#RewriteCond %{HTTP_HOST} !^$
+#RewriteCond %{HTTP_HOST} !^subdomain\.domain\.tld$ [NC]
+#RewriteRule ^/(.*)$ http://subdomain.domain.tld/$1 [L,R=301]
+ 
+## SEO REWRITES ###
+RewriteRule ^activate/(.*)/$     /php_files/activate.php?activate_code=$1 [L,NC]
+
+RewriteRule ^inregistrare/(.*)$  /$1/ [L,NC]
+RewriteRule ^categorie/(.*)/(.*)/$  /?category_id=$2&category_name=$1 [L,NC]
+RewriteRule ^anunt/(.*)/(.*)/$  /?ad_id=$2&ad_title=$1 [L,NC]
+RewriteRule ^pages/(.*)/(.*)/(.*)/$  /?category_id=$2&category_name=$1&current_page=$3 [L,NC]
+
